@@ -1,0 +1,188 @@
+<div class="card mb-5">
+    <div class="card-header border-0 cursor-pointer" role="button" data-bs-toggle="collapse"
+        data-bs-target="#kt_account_profile_details" aria-expanded="true" aria-controls="kt_account_profile_details">
+        <div class="card-title m-0">
+            <h3 class="fw-bolder m-0">
+                {{ formData.productId === 0 ? 'Add Product' : 'Update Product' }}
+            </h3>
+        </div>
+    </div>
+    <div id="kt_account_profile_details" class="collapse show">
+        <form #productForm="ngForm" (ngSubmit)="save()" class="form">
+            <div class="card-body border-top p-9">
+
+                <div class="row mb-6">
+                    <div class="col-lg-6">
+                        
+                        <label class="col-lg-4 col-form-label required fw-bold fs-6">Product Name</label>
+
+                        <input type="text" class="
+                        form-control form-control-lg form-control-solid
+                        mb-3 mb-lg-0
+                        " placeholder="Enter product name" name="productName" [(ngModel)]="formData.productName"
+                            #nameField="ngModel" pattern="^(?=.*[a-zA-Z]).+$" required />
+
+                        <div *ngIf="nameField.invalid && (nameField.dirty || nameField.touched)">
+                            <div *ngIf="nameField.errors?.['required']" class="text-danger">
+                                *Name is required.
+                            </div>
+                            <div *ngIf="nameField.errors?.['pattern']" class="text-danger">
+                                *Name must contain characters only.
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="row">
+                            <div class="col-lg-9">
+                                <label class="col-lg-4 col-form-label fw-bold fs-6">Choose Product Image</label>
+                                <input class="form-control" type="file" (change)="onFileChange($event)" name="file">
+                            </div>
+                            <div class="col">
+                                <div
+                        class="image-input image-input-outline mt-3"
+                        data-kt-image-input="true"
+                        [style.background-image]="'url(./assets/media/avatars/blank.png)'"
+                        >
+                            <img *ngIf="formData.imagePreview"
+                                class="image-input-wrapper w-125px h-125px"
+                                [style.background-image]="formData.imagePreview"
+                                [src]="formData.imagePreview"
+                            />
+                        </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+
+                <div class="row mb-6">
+                    <div class="col-lg-6 fv-row">
+                        <label class="col-lg-4 col-form-label required fw-bold fs-6">Product Price</label>
+                        <input type="number" class="form-control form-control-lg form-control-solid"
+                            placeholder="Enter price" [(ngModel)]="formData.productPrice" 
+                            name="productPrice" min="0.01" step="0.01" #priceField="ngModel" required >
+
+                        <div *ngIf="priceField.invalid && (priceField.dirty || priceField.touched)">
+                            <div *ngIf="priceField.errors?.['required']" class="text-danger">
+                            *Price is required.
+                            </div>
+                            <div *ngIf="priceField.errors?.['min']" class="text-danger">
+                            *Price must be greater than 0.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6 fv-row">
+                        <label class="col-lg-4 col-form-label fw-bold fs-6"><span class="required">Product Features
+                            </span></label>
+                        <ng-multiselect-dropdown
+                            [settings]="featureDropdownSettings"
+                            [data]="featureDropdownList"
+                            [(ngModel)]="featureSelectedItems"
+                            name="features"
+                            #featureField="ngModel"
+                            required>
+                        </ng-multiselect-dropdown>
+
+                        <div *ngIf="featureField.invalid && (featureField.dirty || featureField.touched)">
+                            <div *ngIf="featureField.errors?.['required']" class="text-danger">
+                            *Please select atleast one feature.
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                
+                <div class="row mb-6">
+                    <div class="col-lg-6 fv-row">
+                        <label class="col-lg-4 col-form-label fw-bold fs-6"><span class="required">Product Purchase Date
+
+                        </span></label>
+                        <input type="date" class="form-control form-control-lg form-control-solid" 
+                            name="purchaseDate" placeholder="Select Date" 
+                            [(ngModel)]="formData.purchaseDate" #purchaseDateField="ngModel" required>
+
+                        <div *ngIf="purchaseDateField.invalid && (purchaseDateField.dirty || purchaseDateField.touched)">
+                            <div *ngIf="purchaseDateField.errors?.['required']" class="text-danger">
+                            *Please select purchase date.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6 fv-row">
+                        <label class="col-lg-4 col-form-label required fw-bold fs-6 mb-5">Product Size</label>
+                        <p>
+                            <input class="form-check-input me-1" type="radio" value="small" name="size" [(ngModel)]="formData.size"> 
+                            <label class="fw-bold ps-2 fs-6 me-5">Small</label>
+                            <input class="form-check-input me-1" type="radio" value="medium" name="size" [(ngModel)]="formData.size"> 
+                            <label class="fw-bold ps-2 fs-6 me-5">Medium</label>
+                            <input class="form-check-input me-1" type="radio" value="large" name="size" [(ngModel)]="formData.size"> 
+                            <label class="fw-bold ps-2 fs-6 me-5">Large</label>
+                        </p>
+                    </div>
+
+                </div>
+
+                <div class="row mb-6">
+
+                    <div class="col-lg-6 fv-row">
+                        <label class="col-lg-4 col-form-label fw-bold fs-6"><span class="required">Product Colors</span></label>
+
+                        <div class="d-flex align-items-center mt-3" >
+                            <label class="form-check form-check-inline form-check-solid me-5"
+                            *ngFor="let c of colorList" >
+                                <input
+                                    class="form-check-input"
+                                    type="checkbox"
+                                    [value]="c.id"
+                                    [checked]="selectedColorIds.includes(c.id)"
+                                    (change)="onColorChange($event, c.id)">
+                                <span class="fw-bold ps-2 fs-6">
+                                    {{ c.name }}
+                                </span>
+                            </label>
+                        </div>
+                    </div>
+                    <div *ngIf="selectedColorIds.length === 0 && productForm.submitted" class="text-danger">
+                        Please select at least one color.
+                    </div>
+
+                    <div class="col-lg-6 fv-row">
+                        <label class="col-lg-4 col-form-label fw-bold fs-6"><span class="required">Product Description
+
+                        </span></label>
+                        <textarea class="form-control form-control-lg form-control-solid"
+                        [(ngModel)]="formData.description" name="description"
+                            #descriptionField="ngModel" required></textarea>
+                    </div>
+
+                </div>
+                
+            </div>
+            <div class="card-footer d-flex justify-content-end py-6 px-9">
+                
+                <button type="submit"
+                        class="btn btn-primary me-5"
+                        [disabled]="!productForm.valid">
+                    <i class="bi bi-check-circle me-1"></i>
+                    {{ formData.productId === 0 ? 'Save Product' : 'Update Product' }}
+                </button>
+                
+                <button type="button"
+                        class="btn btn-light btn-active-light-primary me-5"
+                        (click)="reset()">
+                    <i class="bi bi-arrow-clockwise me-1"></i>
+                    Clear
+                </button>
+
+                <button type="button"
+                        class="btn btn-secondary me-2 me-5"
+                        (click)="cancel()">
+                    <i class="bi bi-x-circle me-1"></i>
+                    Back
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

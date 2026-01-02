@@ -1,0 +1,126 @@
+<div class="card mb-5 mb-xl-8">
+    <!-- begin::Header -->
+    <div class="card-header border-0 pt-5">
+        <h3 class="card-title align-items-start flex-column">
+            <span class="card-label fw-bolder fs-3 mb-1">Apply Filters</span>
+            <span class="text-muted mt-1 fw-bold fs-7">Over all products</span>
+        </h3>
+
+    </div>
+
+    <div class="card-body py-3">
+
+        <div class="row mb-6">
+
+            <div class="col-lg-4">
+                <label class="col-form-label fw-bold fs-6">
+                    Search By Name
+                </label>
+                <input type="search" id="searchName"
+                    class="form-control form-control-lg form-control-solid mb-3 mb-lg-0" placeholder="Product Name"
+                    aria-label="Search" [(ngModel)]="searchText">
+            </div>
+
+            <div class="col-lg-4">
+                <label class="col-form-label fw-bold fs-6">
+                    From Date
+                </label>
+                <div class="position-relative">
+                    <input mwlFlatpickr id="fromDate"
+                        class="form-control form-control-lg form-control-solid mb-3 mb-lg-0 ps-12"
+                        placeholder="Select a date" [altInput]="true" [altFormat]="'F j, Y'" [dateFormat]="'Y-m-d'"
+                        [(ngModel)]="fromDate" (change)="validateDates()" />
+                    <span class="position-absolute top-50 start-0 translate-middle-y ps-3">
+                        <i class="fa fa-calendar ms-2"></i>
+                    </span>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <label class="col-form-label fw-bold fs-6">
+                    To Date
+                </label>
+                <div class="position-relative">
+                    <input mwlFlatpickr id="toDate"
+                        class="form-control form-control-lg form-control-solid mb-3 mb-lg-0 ps-12"
+                        placeholder="Select a date" [altInput]="true" [altFormat]="'F j, Y'" [dateFormat]="'Y-m-d'"
+                        [(ngModel)]="toDate" [min]="fromDate" (change)="validateDates()" [disabled]="!fromDate" />
+                    <span class="position-absolute top-50 start-0 translate-middle-y ps-3">
+                        <i class="fa fa-calendar ms-2"></i>
+                    </span>
+                    <div *ngIf="dateError" style="color:red;">
+                        {{ dateError }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mb-6">
+            <div class="col-lg-4">
+                <label class="col-form-label fw-bold fs-6">
+                    Select Features
+                </label>
+                <ng-multiselect-dropdown [settings]="featureDropdownSettings" [data]="featureDropdownList"
+                    [(ngModel)]="selectedFeatures">
+                </ng-multiselect-dropdown>
+            </div>
+
+            <div class="col-lg-4">
+                <label class="col-form-label fw-bold fs-6">
+                    Price Range
+                </label>
+                <ngx-slider [(value)]="priceMinValue" [(highValue)]="priceMaxValue" [options]="priceOptions">
+                </ngx-slider>
+
+                <div>
+                    ₹{{ priceMinValue }} - ₹{{ priceMaxValue }}
+                </div>
+
+                <div *ngIf="priceError" style="color:red">
+                    {{ priceError }}
+                </div>
+            </div>
+
+            <div class="col-lg-4 mt-5">
+                <div class="card-toolbar ms-5 mt-5">
+                    <label class="col-form-label ms-5 fw-bold fs-6">
+
+                    </label>
+                    <button class="btn btn-sm btn-primary ms-5 mt-5 me-3" (click)="applyFilter()">
+                        <i class="bi bi-funnel-fill me-1"></i>
+                        Apply Filters
+                    </button>
+                    <button class="btn btn-sm btn-light btn-active-light-primary mt-5 me-3" (click)="clearFilters()">
+                        <i class="bi bi-arrow-clockwise me-1"></i>
+                        Clear Filters
+                    </button>
+                    <div *ngIf="noFilterError" style="color:red;">
+                        {{ noFilterError }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-toolbar mb-5">
+            <a (click)="addProduct()" class="btn btn-sm btn-primary">
+                <span [inlineSVG]="'./assets/media/icons/duotune/arrows/arr075.svg'"
+                    class="svg-icon svg-icon-3"></span>
+                New Product
+            </a>
+        </div>
+    </div>
+</div>
+
+<app-product-list 
+    [products]="products" 
+    [page]="page" 
+    [pageSize]="pageSize" 
+    [pageSizes]="pageSizes"
+    [totalRecords]="totalRecords" 
+    [noRecordsFound]="noRecordsFound" 
+    (editProduct)="editProduct($event)"
+    (deleteProduct)="deleteProduct($event)" 
+    (pageChange)="onPageChange($event)"
+    (pageSizeChange)="onPageSizeChange($event)" 
+    (applySorting)="sort($event)">
+</app-product-list>
