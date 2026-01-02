@@ -150,6 +150,12 @@ export class FilterProductComponent implements OnInit {
   }
 
   onPageChange(page: number): void {
+
+    if(page < 1 || page > this.pageSize)
+    {
+      return;
+    }
+    
     this.page = page;
     this.load();
   }

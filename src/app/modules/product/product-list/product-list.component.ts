@@ -6,6 +6,7 @@ import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
   styleUrls: ['./product-list.component.css']
 })
 export class ProductListComponent {
+[x: string]: any;
 
   activeSort = 'name';
   direction: 'asc' | 'desc' = 'asc';
@@ -48,5 +49,17 @@ export class ProductListComponent {
     return;
   }
     this.applySorting.emit(column);
+  }
+  get totalPages(): number {
+    if(!this.totalRecords || !this.pageSize){
+      return 0;
+    }
+    return Math.ceil(this.totalRecords / this.pageSize);
+  }
+  get startEntry(): number {
+    return this.totalRecords === 0 ? 0 : (this.page - 1) * this.pageSize + 1;
+  }
+  get endEntry(): number {
+    return Math.min(this.page * this.pageSize, this.totalRecords);
   }
 }
