@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { ProductService } from '../services/product.service';
 import { IDropdownSettings } from 'ng-multiselect-dropdown';
 import { Options } from '@angular-slider/ngx-slider';
+import { ChangeDetectorRef } from '@angular/core';
 
 @Component({
   selector: 'app-filter-product',
@@ -77,7 +78,7 @@ export class FilterProductComponent implements OnInit {
     };
   }
   
-  constructor(private service: ProductService, private router: Router) {}
+  constructor(private service: ProductService, private router: Router, private cdr: ChangeDetectorRef) {}
 
   ngOnInit(): void {
     this.featureDropdownRender();
@@ -103,6 +104,7 @@ export class FilterProductComponent implements OnInit {
       }));
       this.totalRecords = res.totalRecords;
       this.noRecordsFound = this.products.length === 0;
+      this.cdr.detectChanges();
     });
   }
 
@@ -117,6 +119,7 @@ export class FilterProductComponent implements OnInit {
         floor: res.min,
         ceil: res.max
       };
+      this.cdr.detectChanges();
       this.load();
     });
   }
@@ -130,11 +133,9 @@ export class FilterProductComponent implements OnInit {
       this.sortOrder = 'asc';
     }
 
-    Promise.resolve().then(() => {
       this.page = 1;
       this.load();
-    });
-    
+      this.cdr.detectChanges();
   }
 
   addProduct(): void {

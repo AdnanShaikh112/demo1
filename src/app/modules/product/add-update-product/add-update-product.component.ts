@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { ProductService } from '../services/product.service';
 import { IDropdownSettings } from 'ng-multiselect-dropdown';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -9,6 +9,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 })
 export class AddUpdateProductComponent implements OnInit {
 
+  @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
+  
   isEditMode = false;
 
   featureDropdownList: any[] = [];
@@ -39,7 +41,7 @@ export class AddUpdateProductComponent implements OnInit {
   };
 
   constructor(private route: ActivatedRoute,
-    private router: Router, private service: ProductService) {}
+    private router: Router, private service: ProductService, private cdr: ChangeDetectorRef) {}
 
   ngOnInit(): void {
     this.featureDropdownRender();
@@ -72,6 +74,7 @@ export class AddUpdateProductComponent implements OnInit {
     const arr = res.features?.split(', ') || [];
     this.featureSelectedItems =
     this.featureDropdownList.filter(f => arr.includes(f.name));
+    this.cdr.detectChanges();
     });
   }
 
@@ -120,6 +123,7 @@ export class AddUpdateProductComponent implements OnInit {
     const reader = new FileReader();
     reader.onload = () => {
       this.formData.imagePreview = reader.result as string;
+      this.cdr.detectChanges();
     };
     reader.readAsDataURL(file);
   }
@@ -181,8 +185,8 @@ export class AddUpdateProductComponent implements OnInit {
     this.featureSelectedItems = [];
     this.selectedColorIds = [];
     
-    const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
-      if (fileInput) fileInput.value = '';
+    this.fileInput.nativeElement.value = '';
+    this.cdr.detectChanges();
     }
 
 }
